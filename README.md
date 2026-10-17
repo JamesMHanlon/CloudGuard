@@ -15,9 +15,7 @@ python run.py
 ```
 
 Needs Python 3.11 or newer. First launch trains the model (about 5–10
-seconds); after that it starts in roughly a second. The Anthropic API
-key is already in `.env`, so the in-app explanations work out of the
-box. Stop with `Ctrl + C`.
+seconds);
 
 ## What's in the UI
 
