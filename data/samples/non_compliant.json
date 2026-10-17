@@ -1,0 +1,138 @@
+{
+  "resources": [
+    {
+      "name": "customer-data-bucket",
+      "cloud": "AWS",
+      "service": "S3",
+      "region": "us-east-1",
+      "tags": { "env": "production", "owner": "data-team" },
+      "config": {
+        "public_access_block": false,
+        "versioning": false,
+        "encryption": null,
+        "logging": false,
+        "bucket_acl": "public-read"
+      }
+    },
+    {
+      "name": "prod-app-server",
+      "cloud": "AWS",
+      "service": "EC2",
+      "region": "us-east-1",
+      "tags": { "env": "production", "owner": "app-team" },
+      "config": {
+        "ssh_unrestricted": true,
+        "imdsv2": "optional",
+        "ebs_encrypted": false,
+        "public_ip": true,
+        "security_group_open_ports": [22, 80, 443, 3306]
+      }
+    },
+    {
+      "name": "root-iam-account",
+      "cloud": "AWS",
+      "service": "IAM",
+      "region": "global",
+      "config": {
+        "root_mfa": false,
+        "root_access_keys": true,
+        "password_policy_strong": false,
+        "min_password_length": 6,
+        "mfa_enforced": false
+      }
+    },
+    {
+      "name": "prod-postgres",
+      "cloud": "AWS",
+      "service": "RDS",
+      "region": "eu-west-1",
+      "tags": { "env": "production" },
+      "config": {
+        "publicly_accessible": true,
+        "encryption": false,
+        "backup_retention": 0,
+        "auto_minor_version_upgrade": false,
+        "deletion_protection": false
+      }
+    },
+    {
+      "name": "main-cloudtrail",
+      "cloud": "AWS",
+      "service": "CloudTrail",
+      "region": "us-east-1",
+      "config": {
+        "enabled": true,
+        "multi_region": false,
+        "log_validation": false,
+        "s3_bucket_logging": false,
+        "include_global_events": false
+      }
+    },
+    {
+      "name": "prod-storage-account",
+      "cloud": "Azure",
+      "service": "Storage",
+      "region": "eastus",
+      "tags": { "env": "production" },
+      "config": {
+        "https_only": false,
+        "allow_public_access": true,
+        "min_tls_version": "TLS1_0",
+        "encryption_enabled": true,
+        "soft_delete_blobs": false
+      }
+    },
+    {
+      "name": "web-vm-prod",
+      "cloud": "Azure",
+      "service": "VirtualMachine",
+      "region": "westeurope",
+      "config": {
+        "disk_encryption": false,
+        "auto_patching": false,
+        "just_in_time_access": false,
+        "public_ip": true,
+        "open_ports": [22, 3389, 80]
+      }
+    },
+    {
+      "name": "prod-key-vault",
+      "cloud": "Azure",
+      "service": "KeyVault",
+      "region": "eastus",
+      "config": {
+        "soft_delete": false,
+        "purge_protection": false,
+        "rbac_authorization": false,
+        "private_endpoint": false,
+        "firewall_enabled": false
+      }
+    },
+    {
+      "name": "analytics-bucket",
+      "cloud": "GCP",
+      "service": "CloudStorage",
+      "region": "us-central1",
+      "config": {
+        "public_access": true,
+        "uniform_bucket_level_access": false,
+        "versioning": false,
+        "logging": false,
+        "encryption": "Google-managed"
+      }
+    },
+    {
+      "name": "gcp-web-instance",
+      "cloud": "GCP",
+      "service": "ComputeEngine",
+      "region": "us-central1",
+      "config": {
+        "os_login": false,
+        "serial_port_enabled": true,
+        "disk_encryption": false,
+        "public_ip": true,
+        "shielded_vm": false
+      }
+    }
+  ]
+}

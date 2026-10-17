@@ -1,0 +1,247 @@
+{
+  "documents": [
+    {
+      "id": "cis-aws-s3-1",
+      "framework": "CIS",
+      "control": "2.1.1",
+      "service": "S3",
+      "cloud": "AWS",
+      "title": "Ensure S3 Bucket ACL does not grant public access",
+      "text": "Amazon S3 buckets can be made publicly accessible, which can expose sensitive data to unauthorized users. CIS control 2.1.1 requires that S3 bucket ACLs do not grant public read or write access. Public access should be blocked at the account and bucket level using S3 Block Public Access settings. Buckets storing sensitive data must have public_access_block enabled and bucket_acl set to private."
+    },
+    {
+      "id": "cis-aws-s3-2",
+      "framework": "CIS",
+      "control": "2.1.2",
+      "service": "S3",
+      "cloud": "AWS",
+      "title": "Ensure S3 Bucket versioning is enabled",
+      "text": "S3 versioning preserves, retrieves, and restores every version of every object in a bucket, protecting against accidental deletion and overwrite. CIS control 2.1.2 mandates that versioning is enabled on all S3 buckets. Without versioning, data loss from accidental or malicious deletion cannot be recovered. The versioning field should be set to true or Enabled."
+    },
+    {
+      "id": "cis-aws-s3-3",
+      "framework": "CIS",
+      "control": "2.1.3",
+      "service": "S3",
+      "cloud": "AWS",
+      "title": "Ensure S3 Bucket server-side encryption is enabled",
+      "text": "Server-side encryption (SSE) protects S3 data at rest. CIS control 2.1.3 requires that SSE is enabled using AES256 or aws:kms. Without encryption, data stored in S3 is vulnerable to unauthorized access if the underlying storage is compromised. The encryption field should be set to AES256 or aws:kms."
+    },
+    {
+      "id": "cis-aws-s3-4",
+      "framework": "CIS",
+      "control": "2.1.4",
+      "service": "S3",
+      "cloud": "AWS",
+      "title": "Ensure S3 Bucket logging is enabled",
+      "text": "S3 server access logging provides detailed records for requests made to a bucket. CIS control 2.1.4 requires that server access logging is enabled for all S3 buckets. Logging enables security auditing and forensic analysis of access patterns. The logging field should be set to true."
+    },
+    {
+      "id": "cis-aws-ec2-1",
+      "framework": "CIS",
+      "control": "5.1",
+      "service": "EC2",
+      "cloud": "AWS",
+      "title": "Ensure no security groups allow unrestricted ingress on port 22 (SSH)",
+      "text": "Security groups act as virtual firewalls. CIS control 5.1 requires that no security group allows unrestricted inbound SSH access (port 22 from 0.0.0.0/0). Unrestricted SSH access exposes instances to brute-force attacks. The ssh_unrestricted field should be false and ingress rules must not include 0.0.0.0/0 for port 22."
+    },
+    {
+      "id": "cis-aws-ec2-2",
+      "framework": "CIS",
+      "control": "5.4",
+      "service": "EC2",
+      "cloud": "AWS",
+      "title": "Ensure EC2 Instance Metadata Service v2 (IMDSv2) is enabled",
+      "text": "IMDSv2 uses session-oriented requests to protect against SSRF attacks targeting the EC2 metadata service. CIS control 5.4 requires that IMDSv2 is enabled on all EC2 instances. Without IMDSv2, attackers exploiting SSRF vulnerabilities can access sensitive IAM credentials via the metadata endpoint. The imdsv2 field should be required or set to true."
+    },
+    {
+      "id": "cis-aws-ec2-3",
+      "framework": "CIS",
+      "control": "5.6",
+      "service": "EC2",
+      "cloud": "AWS",
+      "title": "Ensure EC2 EBS volumes are encrypted",
+      "text": "EBS volume encryption protects data at rest on EC2 instances. CIS control 5.6 requires encryption for all EBS volumes. Unencrypted EBS volumes risk data exposure if snapshots are shared or volumes are improperly accessed. The ebs_encrypted field should be true."
+    },
+    {
+      "id": "cis-aws-iam-1",
+      "framework": "CIS",
+      "control": "1.1",
+      "service": "IAM",
+      "cloud": "AWS",
+      "title": "Avoid the use of the root account",
+      "text": "The root account has unrestricted access to all AWS resources. CIS control 1.1 mandates that the root account is not used for everyday tasks. Access keys should not exist for root, and MFA should be enabled. The root_mfa field should be true and root_access_keys should be false."
+    },
+    {
+      "id": "cis-aws-iam-2",
+      "framework": "CIS",
+      "control": "1.5",
+      "service": "IAM",
+      "cloud": "AWS",
+      "title": "Ensure IAM password policy requires at least one uppercase letter",
+      "text": "A strong IAM password policy reduces the risk of compromised credentials. CIS control 1.5 requires that the IAM password policy mandates uppercase letters, lowercase letters, numbers, and symbols. The password_policy_strong field should be true and min_password_length should be at least 14."
+    },
+    {
+      "id": "cis-aws-cloudtrail-1",
+      "framework": "CIS",
+      "control": "3.1",
+      "service": "CloudTrail",
+      "cloud": "AWS",
+      "title": "Ensure CloudTrail is enabled in all regions",
+      "text": "AWS CloudTrail provides governance, compliance, and operational auditing of API calls. CIS control 3.1 requires that CloudTrail is enabled in all regions with multi-region trails. Without CloudTrail, unauthorized API activity cannot be detected or investigated. The enabled field should be true and multi_region should be true."
+    },
+    {
+      "id": "cis-aws-cloudtrail-2",
+      "framework": "CIS",
+      "control": "3.2",
+      "service": "CloudTrail",
+      "cloud": "AWS",
+      "title": "Ensure CloudTrail log file validation is enabled",
+      "text": "Log file validation ensures CloudTrail log files have not been tampered with. CIS control 3.2 requires that log file integrity validation is enabled. Without this, attackers who gain access to the S3 bucket could alter or delete logs without detection. The log_validation field should be true."
+    },
+    {
+      "id": "cis-aws-rds-1",
+      "framework": "CIS",
+      "control": "2.3.1",
+      "service": "RDS",
+      "cloud": "AWS",
+      "title": "Ensure RDS instances are not publicly accessible",
+      "text": "RDS instances should not be publicly accessible to prevent direct internet exposure of databases. CIS control 2.3.1 requires that the publicly_accessible flag is set to false. Publicly accessible RDS instances are exposed to brute-force and exploitation attacks. The publicly_accessible field should be false."
+    },
+    {
+      "id": "cis-aws-rds-2",
+      "framework": "CIS",
+      "control": "2.3.2",
+      "service": "RDS",
+      "cloud": "AWS",
+      "title": "Ensure RDS encryption is enabled",
+      "text": "RDS encryption protects database data at rest. CIS control 2.3.2 requires that RDS instances have encryption enabled. Unencrypted RDS instances risk exposure of sensitive database contents. The encryption field should be true."
+    },
+    {
+      "id": "nist-ac-2",
+      "framework": "NIST",
+      "control": "AC-2",
+      "service": "IAM",
+      "cloud": "ALL",
+      "title": "Account Management",
+      "text": "NIST SP 800-53 AC-2 requires organizations to manage information system accounts including establishing, activating, modifying, reviewing, disabling, and removing accounts. MFA should be enforced for all users. Unused accounts must be disabled within 90 days. Privileged accounts require additional review. MFA enforcement and regular account reviews are mandatory compliance requirements."
+    },
+    {
+      "id": "nist-au-2",
+      "framework": "NIST",
+      "control": "AU-2",
+      "service": "Logging",
+      "cloud": "ALL",
+      "title": "Audit Events",
+      "text": "NIST SP 800-53 AU-2 requires that the organization determines which events the information system is capable of auditing. Audit events must include successful and unsuccessful login attempts, privilege escalation, object access changes, and policy changes. CloudTrail, Azure Monitor, and GCP Cloud Audit Logs must be enabled and configured to capture all relevant events."
+    },
+    {
+      "id": "nist-sc-8",
+      "framework": "NIST",
+      "control": "SC-8",
+      "service": "Network",
+      "cloud": "ALL",
+      "title": "Transmission Confidentiality and Integrity",
+      "text": "NIST SP 800-53 SC-8 requires that the information system implements cryptographic mechanisms to prevent unauthorized disclosure of information during transmission. All data in transit must be encrypted using TLS 1.2 or higher. HTTPS must be enforced on all endpoints. The https_only field should be true and min_tls_version should be TLS1_2 or higher."
+    },
+    {
+      "id": "nist-si-2",
+      "framework": "NIST",
+      "control": "SI-2",
+      "service": "Compute",
+      "cloud": "ALL",
+      "title": "Flaw Remediation",
+      "text": "NIST SP 800-53 SI-2 requires timely identification, reporting, and correction of information system flaws. Automatic patching and security updates should be enabled. Systems must have automatic_updates or auto_patching enabled to ensure timely remediation of known vulnerabilities."
+    },
+    {
+      "id": "iso-a9-1",
+      "framework": "ISO27001",
+      "control": "A.9.1",
+      "service": "IAM",
+      "cloud": "ALL",
+      "title": "Access Control Policy",
+      "text": "ISO 27001 Annex A.9.1 requires an access control policy to be established, documented, and reviewed based on business and security requirements. Least privilege principles must be applied. IAM policies should deny all by default and grant only required permissions. MFA must be enforced for all privileged accounts. IAM roles should follow least-privilege principles."
+    },
+    {
+      "id": "iso-a10-1",
+      "framework": "ISO27001",
+      "control": "A.10.1",
+      "service": "Encryption",
+      "cloud": "ALL",
+      "title": "Policy on the use of cryptographic controls",
+      "text": "ISO 27001 Annex A.10.1 requires a policy on the use of cryptographic controls for protection of information. All data at rest and in transit must be encrypted. Encryption keys must be managed through a dedicated key management service. The encryption field must be enabled. Key management through AWS KMS, Azure Key Vault, or GCP KMS is required."
+    },
+    {
+      "id": "iso-a12-4",
+      "framework": "ISO27001",
+      "control": "A.12.4",
+      "service": "Logging",
+      "cloud": "ALL",
+      "title": "Logging and Monitoring",
+      "text": "ISO 27001 Annex A.12.4 requires that event logs recording user activities, exceptions, faults, and information security events should be produced, kept, and regularly reviewed. Audit logging must be enabled for all cloud services. Log retention must be at least 90 days. The logging field should be true and log retention settings must meet minimum requirements."
+    },
+    {
+      "id": "cis-azure-storage-1",
+      "framework": "CIS",
+      "control": "3.1",
+      "service": "Storage",
+      "cloud": "Azure",
+      "title": "Ensure that Secure transfer required is set to Enabled for Storage Accounts",
+      "text": "Azure Storage accounts support both HTTP and HTTPS. CIS Azure control 3.1 requires that secure transfer (HTTPS) is enabled for all storage accounts. Allowing HTTP enables man-in-the-middle attacks on data in transit. The https_only field should be true."
+    },
+    {
+      "id": "cis-azure-storage-2",
+      "framework": "CIS",
+      "control": "3.7",
+      "service": "Storage",
+      "cloud": "Azure",
+      "title": "Ensure storage account public access is disallowed",
+      "text": "Azure storage accounts can allow public blob access which exposes data without authentication. CIS Azure control 3.7 requires that public blob access is disallowed. The allow_public_access field should be false to prevent unauthorized data exposure."
+    },
+    {
+      "id": "cis-azure-vm-1",
+      "framework": "CIS",
+      "control": "7.2",
+      "service": "VirtualMachine",
+      "cloud": "Azure",
+      "title": "Ensure that OS disks are encrypted",
+      "text": "Azure Disk Encryption protects OS and data disks of virtual machines. CIS Azure control 7.2 requires that OS disks are encrypted. Unencrypted VM disks risk data exposure if the underlying hardware is compromised. The disk_encryption field should be true."
+    },
+    {
+      "id": "cis-azure-keyvault-1",
+      "framework": "CIS",
+      "control": "8.1",
+      "service": "KeyVault",
+      "cloud": "Azure",
+      "title": "Ensure Key Vault soft delete is enabled",
+      "text": "Azure Key Vault soft delete retains deleted vaults and vault objects for a specified retention period. CIS Azure control 8.1 requires that soft delete is enabled to prevent accidental or malicious deletion of cryptographic keys. The soft_delete field should be true and purge_protection should be true."
+    },
+    {
+      "id": "cis-gcp-storage-1",
+      "framework": "CIS",
+      "control": "5.1",
+      "service": "CloudStorage",
+      "cloud": "GCP",
+      "title": "Ensure that Cloud Storage bucket is not anonymously or publicly accessible",
+      "text": "GCP Cloud Storage buckets can be made publicly accessible. CIS GCP control 5.1 requires that buckets do not grant allUsers or allAuthenticatedUsers access. Publicly accessible buckets expose data to unauthorized users. The public_access field should be false and uniform_bucket_level_access should be true."
+    },
+    {
+      "id": "cis-gcp-compute-1",
+      "framework": "CIS",
+      "control": "4.1",
+      "service": "ComputeEngine",
+      "cloud": "GCP",
+      "title": "Ensure OS login is enabled for compute instances",
+      "text": "GCP OS Login links SSH access to Google IAM identities. CIS GCP control 4.1 requires that OS Login is enabled for all compute instances. Without OS Login, SSH keys are managed manually and can be easily misconfigured. The os_login field should be true."
+    },
+    {
+      "id": "cis-gcp-compute-2",
+      "framework": "CIS",
+      "control": "4.5",
+      "service": "ComputeEngine",
+      "cloud": "GCP",
+      "title": "Ensure serial port access is disabled",
+      "text": "GCP serial port access allows interactive access to VM instances outside of normal SSH. CIS GCP control 4.5 requires that serial port access is disabled. Enabled serial ports bypass firewall rules and VPC security controls. The serial_port_enabled field should be false."
+    }
+  ]
+}

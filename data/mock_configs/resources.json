@@ -1,0 +1,349 @@
+{
+  "resources": [
+    {
+      "resource_id": "aws-s3-prod-data-001",
+      "name": "prod-data-bucket",
+      "cloud": "AWS",
+      "service": "S3",
+      "region": "us-east-1",
+      "tags": {"env": "production", "owner": "data-team"},
+      "config": {
+        "public_access_block": false,
+        "versioning": true,
+        "encryption": "AES256",
+        "logging": false,
+        "bucket_acl": "public-read"
+      }
+    },
+    {
+      "resource_id": "aws-s3-backup-002",
+      "name": "backup-bucket-002",
+      "cloud": "AWS",
+      "service": "S3",
+      "region": "us-east-1",
+      "tags": {"env": "production", "owner": "ops-team"},
+      "config": {
+        "public_access_block": true,
+        "versioning": true,
+        "encryption": "aws:kms",
+        "logging": true,
+        "bucket_acl": "private"
+      }
+    },
+    {
+      "resource_id": "aws-s3-static-web-003",
+      "name": "static-website-bucket",
+      "cloud": "AWS",
+      "service": "S3",
+      "region": "eu-west-1",
+      "tags": {"env": "production", "owner": "web-team"},
+      "config": {
+        "public_access_block": false,
+        "versioning": false,
+        "encryption": null,
+        "logging": false,
+        "bucket_acl": "public-read"
+      }
+    },
+    {
+      "resource_id": "aws-s3-logs-004",
+      "name": "cloudtrail-logs-bucket",
+      "cloud": "AWS",
+      "service": "S3",
+      "region": "us-east-1",
+      "tags": {"env": "production", "owner": "security-team"},
+      "config": {
+        "public_access_block": true,
+        "versioning": true,
+        "encryption": "aws:kms",
+        "logging": true,
+        "bucket_acl": "private"
+      }
+    },
+    {
+      "resource_id": "aws-ec2-app-001",
+      "name": "app-server-prod-01",
+      "cloud": "AWS",
+      "service": "EC2",
+      "region": "us-east-1",
+      "tags": {"env": "production", "owner": "app-team"},
+      "config": {
+        "ssh_unrestricted": true,
+        "imdsv2": "optional",
+        "ebs_encrypted": false,
+        "public_ip": true,
+        "security_group_open_ports": [22, 80, 443, 3306]
+      }
+    },
+    {
+      "resource_id": "aws-ec2-db-002",
+      "name": "db-server-prod-01",
+      "cloud": "AWS",
+      "service": "EC2",
+      "region": "us-east-1",
+      "tags": {"env": "production", "owner": "db-team"},
+      "config": {
+        "ssh_unrestricted": false,
+        "imdsv2": "required",
+        "ebs_encrypted": true,
+        "public_ip": false,
+        "security_group_open_ports": [5432]
+      }
+    },
+    {
+      "resource_id": "aws-ec2-bastion-003",
+      "name": "bastion-host-01",
+      "cloud": "AWS",
+      "service": "EC2",
+      "region": "us-east-1",
+      "tags": {"env": "production", "owner": "ops-team"},
+      "config": {
+        "ssh_unrestricted": true,
+        "imdsv2": "optional",
+        "ebs_encrypted": true,
+        "public_ip": true,
+        "security_group_open_ports": [22]
+      }
+    },
+    {
+      "resource_id": "aws-iam-root-001",
+      "name": "root-account",
+      "cloud": "AWS",
+      "service": "IAM",
+      "region": "global",
+      "tags": {},
+      "config": {
+        "root_mfa": false,
+        "root_access_keys": true,
+        "password_policy_strong": false,
+        "min_password_length": 8,
+        "mfa_enforced": false
+      }
+    },
+    {
+      "resource_id": "aws-iam-admin-002",
+      "name": "admin-policy",
+      "cloud": "AWS",
+      "service": "IAM",
+      "region": "global",
+      "tags": {"team": "security"},
+      "config": {
+        "root_mfa": true,
+        "root_access_keys": false,
+        "password_policy_strong": true,
+        "min_password_length": 16,
+        "mfa_enforced": true
+      }
+    },
+    {
+      "resource_id": "aws-cloudtrail-001",
+      "name": "main-trail",
+      "cloud": "AWS",
+      "service": "CloudTrail",
+      "region": "us-east-1",
+      "tags": {"env": "production"},
+      "config": {
+        "enabled": true,
+        "multi_region": false,
+        "log_validation": false,
+        "s3_bucket_logging": true,
+        "include_global_events": true
+      }
+    },
+    {
+      "resource_id": "aws-cloudtrail-002",
+      "name": "global-trail",
+      "cloud": "AWS",
+      "service": "CloudTrail",
+      "region": "us-east-1",
+      "tags": {"env": "production"},
+      "config": {
+        "enabled": true,
+        "multi_region": true,
+        "log_validation": true,
+        "s3_bucket_logging": true,
+        "include_global_events": true
+      }
+    },
+    {
+      "resource_id": "aws-rds-prod-001",
+      "name": "prod-postgres-db",
+      "cloud": "AWS",
+      "service": "RDS",
+      "region": "us-east-1",
+      "tags": {"env": "production", "owner": "db-team"},
+      "config": {
+        "publicly_accessible": true,
+        "encryption": false,
+        "backup_retention": 0,
+        "auto_minor_version_upgrade": false,
+        "deletion_protection": false
+      }
+    },
+    {
+      "resource_id": "aws-rds-dev-002",
+      "name": "dev-mysql-db",
+      "cloud": "AWS",
+      "service": "RDS",
+      "region": "us-west-2",
+      "tags": {"env": "development", "owner": "dev-team"},
+      "config": {
+        "publicly_accessible": false,
+        "encryption": true,
+        "backup_retention": 7,
+        "auto_minor_version_upgrade": true,
+        "deletion_protection": true
+      }
+    },
+    {
+      "resource_id": "azure-storage-prod-001",
+      "name": "prodstorage001",
+      "cloud": "Azure",
+      "service": "Storage",
+      "region": "eastus",
+      "tags": {"env": "production", "owner": "data-team"},
+      "config": {
+        "https_only": false,
+        "allow_public_access": true,
+        "min_tls_version": "TLS1_0",
+        "encryption_enabled": true,
+        "soft_delete_blobs": false
+      }
+    },
+    {
+      "resource_id": "azure-storage-backup-002",
+      "name": "backupstorage002",
+      "cloud": "Azure",
+      "service": "Storage",
+      "region": "westeurope",
+      "tags": {"env": "production", "owner": "ops-team"},
+      "config": {
+        "https_only": true,
+        "allow_public_access": false,
+        "min_tls_version": "TLS1_2",
+        "encryption_enabled": true,
+        "soft_delete_blobs": true
+      }
+    },
+    {
+      "resource_id": "azure-vm-web-001",
+      "name": "web-server-vm-01",
+      "cloud": "Azure",
+      "service": "VirtualMachine",
+      "region": "eastus",
+      "tags": {"env": "production", "owner": "web-team"},
+      "config": {
+        "disk_encryption": false,
+        "auto_patching": false,
+        "just_in_time_access": false,
+        "public_ip": true,
+        "open_ports": [22, 80, 443, 3389]
+      }
+    },
+    {
+      "resource_id": "azure-vm-app-002",
+      "name": "app-server-vm-02",
+      "cloud": "Azure",
+      "service": "VirtualMachine",
+      "region": "northeurope",
+      "tags": {"env": "production", "owner": "app-team"},
+      "config": {
+        "disk_encryption": true,
+        "auto_patching": true,
+        "just_in_time_access": true,
+        "public_ip": false,
+        "open_ports": [443]
+      }
+    },
+    {
+      "resource_id": "azure-keyvault-prod-001",
+      "name": "prod-key-vault",
+      "cloud": "Azure",
+      "service": "KeyVault",
+      "region": "eastus",
+      "tags": {"env": "production", "owner": "security-team"},
+      "config": {
+        "soft_delete": false,
+        "purge_protection": false,
+        "rbac_authorization": true,
+        "private_endpoint": false,
+        "firewall_enabled": false
+      }
+    },
+    {
+      "resource_id": "azure-keyvault-backup-002",
+      "name": "backup-key-vault",
+      "cloud": "Azure",
+      "service": "KeyVault",
+      "region": "westeurope",
+      "tags": {"env": "production", "owner": "security-team"},
+      "config": {
+        "soft_delete": true,
+        "purge_protection": true,
+        "rbac_authorization": true,
+        "private_endpoint": true,
+        "firewall_enabled": true
+      }
+    },
+    {
+      "resource_id": "gcp-storage-data-001",
+      "name": "gcp-prod-data-bucket",
+      "cloud": "GCP",
+      "service": "CloudStorage",
+      "region": "us-central1",
+      "tags": {"env": "production", "owner": "data-team"},
+      "config": {
+        "public_access": true,
+        "uniform_bucket_level_access": false,
+        "versioning": false,
+        "logging": false,
+        "encryption": "Google-managed"
+      }
+    },
+    {
+      "resource_id": "gcp-storage-backup-002",
+      "name": "gcp-backup-bucket",
+      "cloud": "GCP",
+      "service": "CloudStorage",
+      "region": "europe-west1",
+      "tags": {"env": "production", "owner": "ops-team"},
+      "config": {
+        "public_access": false,
+        "uniform_bucket_level_access": true,
+        "versioning": true,
+        "logging": true,
+        "encryption": "CMEK"
+      }
+    },
+    {
+      "resource_id": "gcp-compute-web-001",
+      "name": "gcp-web-instance-01",
+      "cloud": "GCP",
+      "service": "ComputeEngine",
+      "region": "us-central1",
+      "tags": {"env": "production", "owner": "web-team"},
+      "config": {
+        "os_login": false,
+        "serial_port_enabled": true,
+        "disk_encryption": false,
+        "public_ip": true,
+        "shielded_vm": false
+      }
+    },
+    {
+      "resource_id": "gcp-compute-app-002",
+      "name": "gcp-app-instance-02",
+      "cloud": "GCP",
+      "service": "ComputeEngine",
+      "region": "europe-west1",
+      "tags": {"env": "production", "owner": "app-team"},
+      "config": {
+        "os_login": true,
+        "serial_port_enabled": false,
+        "disk_encryption": true,
+        "public_ip": false,
+        "shielded_vm": true
+      }
+    }
+  ]
+}

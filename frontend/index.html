@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CloudGuard — Compliance Automation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">⬡</div>
+      <div>
+        <div class="logo-name">CloudGuard</div>
+        <div class="logo-tagline">Compliance AI</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">OVERVIEW</div>
+      <a href="#" class="nav-item active" data-view="dashboard" onclick="showView('dashboard')">
+        <span class="nav-icon">▦</span> Dashboard
+      </a>
+      <a href="#" class="nav-item" data-view="resources" onclick="showView('resources')">
+        <span class="nav-icon">⊞</span> Resources
+      </a>
+
+      <div class="nav-section-label">INTELLIGENCE</div>
+      <a href="#" class="nav-item" data-view="ml" onclick="showView('ml')">
+        <span class="nav-icon">◎</span> ML Insights
+      </a>
+      <a href="#" class="nav-item" data-view="scan" onclick="showView('scan')">
+        <span class="nav-icon">⊕</span> Custom Scan
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-status">
+        <div class="status-dot"></div>
+        <span>Engine running</span>
+      </div>
+      <div class="sidebar-version">v1.0.0 · BS3203</div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+
+    <!-- DASHBOARD VIEW -->
+    <div id="view-dashboard" class="view active">
+      <div class="page-header">
+        <div>
+          <h1>Compliance Dashboard</h1>
+          <p>Real-time posture across AWS, Azure &amp; GCP</p>
+        </div>
+        <div class="header-badge" id="compliance-badge">Loading...</div>
+      </div>
+
+      <div class="kpi-grid" id="kpi-grid">
+        <div class="kpi-card" id="kpi-total">
+          <div class="kpi-icon kpi-blue">⊞</div>
+          <div class="kpi-body">
+            <div class="kpi-value">—</div>
+            <div class="kpi-label">Total Resources</div>
+          </div>
+        </div>
+        <div class="kpi-card" id="kpi-compliant">
+          <div class="kpi-icon kpi-green">✓</div>
+          <div class="kpi-body">
+            <div class="kpi-value">—</div>
+            <div class="kpi-label">Compliant</div>
+          </div>
+        </div>
+        <div class="kpi-card" id="kpi-noncompliant">
+          <div class="kpi-icon kpi-red">✕</div>
+          <div class="kpi-body">
+            <div class="kpi-value">—</div>
+            <div class="kpi-label">Non-Compliant</div>
+          </div>
+        </div>
+        <div class="kpi-card" id="kpi-critical">
+          <div class="kpi-icon kpi-orange">⚠</div>
+          <div class="kpi-body">
+            <div class="kpi-value">—</div>
+            <div class="kpi-label">Critical Violations</div>
+          </div>
+        </div>
+        <div class="kpi-card" id="kpi-rate">
+          <div class="kpi-icon kpi-purple">◎</div>
+          <div class="kpi-body">
+            <div class="kpi-value">—</div>
+            <div class="kpi-label">Compliance Rate</div>
+          </div>
+        </div>
+        <div class="kpi-card" id="kpi-risk">
+          <div class="kpi-icon kpi-pink">▲</div>
+          <div class="kpi-body">
+            <div class="kpi-value">—</div>
+            <div class="kpi-label">Avg ML Risk</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="panel">
+          <div class="panel-header">
+            <h3>By Cloud Provider</h3>
+            <span class="panel-sub">Non-compliant resources</span>
+          </div>
+          <div id="cloud-chart" class="chart-body"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Violations by Framework</h3>
+            <span class="panel-sub">Total control failures</span>
+          </div>
+          <div id="framework-chart" class="chart-body"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <h3>Highest Risk Resources</h3>
+          <span class="panel-sub">Sorted by ML risk score</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Resource</th><th>Cloud</th><th>Service</th>
+                <th>Region</th><th>Violations</th><th>ML Risk</th>
+                <th>Status</th><th></th>
+              </tr>
+            </thead>
+            <tbody id="dash-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESOURCES VIEW -->
+    <div id="view-resources" class="view">
+      <div class="page-header">
+        <div>
+          <h1>All Resources</h1>
+          <p>Filter and inspect every scanned cloud resource</p>
+        </div>
+        <div class="filter-row">
+          <select id="filter-cloud" onchange="applyFilters()">
+            <option value="">All Clouds</option>
+            <option value="AWS">AWS</option>
+            <option value="Azure">Azure</option>
+            <option value="GCP">GCP</option>
+          </select>
+          <select id="filter-status" onchange="applyFilters()">
+            <option value="">All Status</option>
+            <option value="false">Non-Compliant</option>
+            <option value="true">Compliant</option>
+          </select>
+          <select id="filter-service" onchange="applyFilters()">
+            <option value="">All Services</option>
+          </select>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Resource</th><th>Cloud</th><th>Service</th>
+                <th>Region</th><th>Violations</th><th>ML Risk</th>
+                <th>Status</th><th></th>
+              </tr>
+            </thead>
+            <tbody id="resources-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ML INSIGHTS VIEW -->
+    <div id="view-ml" class="view">
+      <div class="page-header">
+        <div>
+          <h1>ML Insights</h1>
+          <p>Gradient Boosting model · F1 0.978 · trained on CIS / NIST / ISO patterns</p>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Feature Importances</h3>
+            <span class="panel-sub">Top config fields driving the risk score</span>
+          </div>
+          <div id="importance-chart" class="chart-body"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Risk Distribution</h3>
+            <span class="panel-sub">ML-predicted risk across all resources</span>
+          </div>
+          <div id="risk-dist-chart" class="chart-body"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <h3>Risk Score vs Violation Count</h3>
+          <span class="panel-sub">Each dot is one resource — hover for details</span>
+        </div>
+        <div id="scatter-chart" class="chart-body scatter-wrap"></div>
+      </div>
+    </div>
+
+    <!-- CUSTOM SCAN VIEW -->
+    <div id="view-scan" class="view">
+      <div class="page-header">
+        <div>
+          <h1>Compliance Scanner</h1>
+          <p>Check individual resources or import your entire cloud environment at once</p>
+        </div>
+      </div>
+
+      <!-- SCAN TABS -->
+      <div class="scan-tabs">
+        <button class="scan-tab active" id="tab-bulk"   onclick="switchScanTab('bulk')">
+          ⊞ &nbsp;Bulk Import <span class="tab-badge">NEW</span>
+        </button>
+        <button class="scan-tab"        id="tab-single" onclick="switchScanTab('single')">
+          ◎ &nbsp;Single Resource
+        </button>
+      </div>
+
+      <!-- ── BULK TAB ─────────────────────────────────────────── -->
+      <div id="scan-bulk-tab">
+
+        <div class="bulk-layout">
+          <!-- LEFT: upload + controls -->
+          <div class="panel bulk-input-panel">
+            <div class="panel-header">
+              <h3>Import Resources</h3>
+              <span class="panel-sub">JSON file or paste · up to 200 resources</span>
+            </div>
+
+            <!-- Drop zone -->
+            <div class="drop-zone" id="drop-zone"
+                 ondragover="onDragOver(event)"
+                 ondragleave="onDragLeave(event)"
+                 ondrop="onDrop(event)"
+                 onclick="document.getElementById('file-input').click()">
+              <div class="drop-icon">⬆</div>
+              <div class="drop-title">Drop your JSON file here</div>
+              <div class="drop-sub">or click to browse · .json files only</div>
+              <input type="file" id="file-input" accept=".json" style="display:none" onchange="onFileChosen(event)" />
+            </div>
+
+            <!-- Paste area -->
+            <div style="padding:0 22px 6px">
+              <div class="or-divider"><span>or paste JSON directly</span></div>
+            </div>
+            <div style="padding:0 22px 14px">
+              <textarea id="bulk-paste" rows="9"
+                placeholder='{ "resources": [ { "name": "my-bucket", "cloud": "AWS", "service": "S3", "config": { "public_access_block": false, ... } }, ... ] }'
+                oninput="onBulkPaste()"></textarea>
+            </div>
+
+            <!-- Download samples -->
+            <div class="sample-row">
+              <span>Download sample:</span>
+              <a href="/api/samples/non_compliant.json" download class="sample-link">
+                ↓ Non-compliant (10 resources)
+              </a>
+              <a href="/api/samples/compliant.json" download class="sample-link">
+                ↓ Compliant (10 resources)
+              </a>
+            </div>
+
+            <!-- Detected preview -->
+            <div id="bulk-preview" class="hidden">
+              <div class="panel-header" style="border-top:1px solid var(--border);margin-top:4px">
+                <h3 id="preview-title">Detected Resources</h3>
+                <span class="panel-sub" id="preview-sub"></span>
+              </div>
+              <div class="table-wrap" style="max-height:200px;overflow-y:auto">
+                <table>
+                  <thead><tr><th>#</th><th>Name</th><th>Cloud</th><th>Service</th><th>Region</th></tr></thead>
+                  <tbody id="preview-table-body"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div style="padding:16px 22px 22px">
+              <button class="btn-scan" id="bulk-scan-btn" onclick="runBulkScan()" disabled style="margin:0;width:100%">
+                <span id="bulk-btn-text">▶ &nbsp;Run Bulk Scan</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- RIGHT: results -->
+          <div id="bulk-results" class="hidden" style="min-width:0">
+
+            <!-- Summary KPIs -->
+            <div class="panel" id="bulk-summary-panel">
+              <div class="panel-header"><h3>Scan Summary</h3><span class="panel-sub" id="bulk-summary-sub"></span></div>
+              <div class="bulk-kpis" id="bulk-kpis"></div>
+              <div style="padding:0 22px 18px">
+                <div class="two-col" style="margin-bottom:0">
+                  <div><div id="bulk-cloud-chart" class="chart-body" style="padding:0"></div></div>
+                  <div><div id="bulk-fw-chart"    class="chart-body" style="padding:0"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Per-resource results table -->
+            <div class="panel">
+              <div class="panel-header">
+                <h3>Results</h3>
+                <span class="panel-sub">Click a row to see violations</span>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Resource</th><th>Cloud</th><th>Service</th>
+                      <th>Violations</th><th>ML Risk</th><th>Status</th><th></th>
+                    </tr>
+                  </thead>
+                  <tbody id="bulk-table-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SINGLE TAB ────────────────────────────────────────── -->
+      <div id="scan-single-tab" class="hidden">
+        <div class="scan-layout">
+          <div class="panel scan-panel">
+            <div class="panel-header"><h3>Configuration Input</h3></div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Cloud Provider</label>
+                <select id="scan-cloud"><option value="AWS">AWS</option><option value="Azure">Azure</option><option value="GCP">GCP</option></select>
+              </div>
+              <div class="form-group">
+                <label>Service</label>
+                <select id="scan-service">
+                  <option value="S3">S3</option><option value="EC2">EC2</option>
+                  <option value="IAM">IAM</option><option value="CloudTrail">CloudTrail</option>
+                  <option value="RDS">RDS</option><option value="Storage">Storage (Azure)</option>
+                  <option value="VirtualMachine">VirtualMachine (Azure)</option>
+                  <option value="KeyVault">KeyVault (Azure)</option>
+                  <option value="CloudStorage">CloudStorage (GCP)</option>
+                  <option value="ComputeEngine">ComputeEngine (GCP)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Resource Name</label>
+                <input type="text" id="scan-name" value="my-resource" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Configuration JSON</label>
+              <textarea id="scan-config" rows="11" placeholder='{"public_access_block": false, "versioning": true}'></textarea>
+            </div>
+            <div class="template-row">
+              <span>Load template:</span>
+              <button onclick="loadTemplate('s3-bad')">S3 Bad</button>
+              <button onclick="loadTemplate('s3-good')">S3 Good</button>
+              <button onclick="loadTemplate('ec2-bad')">EC2 Bad</button>
+              <button onclick="loadTemplate('iam-bad')">IAM Bad</button>
+            </div>
+            <button class="btn-scan" onclick="runCustomScan()">
+              <span id="scan-btn-text">▶ &nbsp;Run Scan</span>
+            </button>
+          </div>
+          <div id="scan-result" class="panel scan-result-panel hidden">
+            <div class="panel-header"><h3>Scan Results</h3></div>
+            <div id="scan-result-body"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- RESOURCE DETAIL MODAL -->
+  <div id="modal-overlay" class="modal-overlay hidden" onclick="closeModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div id="modal-content"></div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
